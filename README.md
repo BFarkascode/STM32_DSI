@@ -78,11 +78,7 @@ We now have our own working version of the original project with all the unneces
 -	We define the LCD driver handler (LCD_UTILS_drv_t). Mind, this handler is a function pointer (!) struct, so we will have to fill it up with functions (see below).
 -	We define the image array as static constants (in FLASH, not RAM).
 -	We have the stock HAL drivers for clocking, GPIO, DMA2D, LTDC and DSIHOST (this latest one having a user-added element where the clocking is defined, see below). We will replace these in out custom solution.
--	We have a handful of supporting functions:
-	o	Copybuffer: engages the DMA2D and transfers the image to the LCD buffer
-	o	LCD_Set_Default_clock: sets DSIPHY clocking and resets the LCD
-	o	SetPanelConfig: this is the LCD configuration command set
-	o	LCD_FillRect: support function for the LCD_UTILS handler. We will call this through the driver. (On the original example, we have a lot more, but we don’t need them so, they are cut.)
+-	We have a handful of supporting functions: Copybuffer (engages the DMA2D and transfers the image to the LCD buffer), LCD_Set_Default_clock (sets DSIPHY clocking and resets the LCD), SetPanelConfig (this is the LCD configuration command set), LCD_FillRect (support function for the LCD_UTILS handler. We will call this through the driver.) Of note, on the original example, we have a lot more, but we don’t need them so, they are cut.
 -	We have the main loop then calling all the HAL config followed by the LCD configuration function.
 -	Next, we load the function pointers into the LCD driver handler.
 -	Then we glue the STM32_LCD driver(stm32_lcd.h) to the LCD driver (lcd.h).
