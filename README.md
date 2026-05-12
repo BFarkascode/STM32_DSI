@@ -88,7 +88,7 @@ o	LCD_FillRect: support function for the LCD_UTILS handler. We will call this th
 -	Then we glue the STM32_LCD driver(stm32_lcd.h) to the LCD driver (lcd.h).
 -	We wipe the LCD to black using the UTIL_LCD_Clear function (which calls UTIL_LCD_FillRect function, which calls the LCD_FillRect support function from above).
 -	We finish by calling the Copybuffer function.
--	
+
 As we can see, there is a whole lot of generalisation and drivers calling drivers that we can further simplify.
 
 We can replace the “UTIL_LCD_Clear” function with its support function counterpart (instance will be Null or just 0). Mind, “FillRect” manipulates the LTDC, not the DSI. It technically just change whatever is loaded to the LTDC by adjusting the memory addresses directly (the layer_0 start address is “hltdc.LayerCfg[0].FBStartAdress”, which should be “0x200d0000” if we properly copied the “.ioc” from the example project).
