@@ -43,21 +43,21 @@ So, what files will we need to build our own version of the project?
 The most apparent element we will be setting up is the “.ioc” file (i.e, CubeMx). Now, the ideal solution would be to just take the existing “.ioc” from the example project and then clone it for our new project. Unfortunately, this will not work either because there are some integration elements within the example project that is not transferred this way, or because the example project is written for an U5A9 and not for the U5G9 (mind, the A9 is the previous version of the G9 that is not available anymore).
 
 Long story short, we will need to set up our own “.ioc” by hand from scratch by:
-o	enabling HSE
-o	set RCC parameter settings
-o	enable LTDC and configure it for 24 bits RGB888 DSI mode
-o	enable DMA2D and configure it
-o	enable DSIHost at and configure it for video mode
-o	set PWR, especially SMPS
-o	set up a GPIO pull-up on the screen reset pin on PD5
+-	enabling HSE
+-	set RCC parameter settings
+-	enable LTDC and configure it for 24 bits RGB888 DSI mode
+-	enable DMA2D and configure it
+-	enable DSIHost at and configure it for video mode
+-	set PWR, especially SMPS
+-	set up a GPIO pull-up on the screen reset pin on PD5
 
 We will also need to set the clock config to:
-o	run using PLLCLK at 160 MHz
-o	PLL2 on HSE running PLL2R at 20.8333 MHz (can be omitted if we aren’t using PLL2 as LTDC source)
-o	PLL3 on HSE running PLL3R at 20.8333 MHz ay PLL3P at 62.5 MHz
-o	set the LTDC clock as PLL3R (can be PLL2R as alternative)
-o	clock the DSI lane byte clock at 62.5 MHz using either the HSE or the PLL3P (this could be switched to the local DSI PLL, but isn’t necessary just to make the code work)
-o	clock the DSI txclkesc clock at 15.625 MHz by prescaling the lane byte clock
+-	run using PLLCLK at 160 MHz
+-	PLL2 on HSE running PLL2R at 20.8333 MHz (can be omitted if we aren’t using PLL2 as LTDC source)
+-	PLL3 on HSE running PLL3R at 20.8333 MHz ay PLL3P at 62.5 MHz
+-	set the LTDC clock as PLL3R (can be PLL2R as alternative)
+-	clock the DSI lane byte clock at 62.5 MHz using either the HSE or the PLL3P (this could be switched to the local DSI PLL, but isn’t necessary just to make the code work)
+-	clock the DSI txclkesc clock at 15.625 MHz by prescaling the lane byte clock
 
 Mind, this is just a clumsy recreation of something that works. Also, the “.ioc” we will generate this way will be transferrable, unlike the original one.
 
@@ -79,10 +79,10 @@ We now have our own working version of the original project with all the unneces
 -	We define the image array as static constants (in FLASH, not RAM).
 -	We have the stock HAL drivers for clocking, GPIO, DMA2D, LTDC and DSIHOST (this latest one having a user-added element where the clocking is defined, see below). We will replace these in out custom solution.
 -	We have a handful of supporting functions:
-o	Copybuffer: engages the DMA2D and transfers the image to the LCD buffer
-o	LCD_Set_Default_clock: sets DSIPHY clocking and resets the LCD
-o	SetPanelConfig: this is the LCD configuration command set
-o	LCD_FillRect: support function for the LCD_UTILS handler. We will call this through the driver. (On the original example, we have a lot more, but we don’t need them so, they are cut.)
+	o	Copybuffer: engages the DMA2D and transfers the image to the LCD buffer
+	o	LCD_Set_Default_clock: sets DSIPHY clocking and resets the LCD
+	o	SetPanelConfig: this is the LCD configuration command set
+	o	LCD_FillRect: support function for the LCD_UTILS handler. We will call this through the driver. (On the original example, we have a lot more, but we don’t need them so, they are cut.)
 -	We have the main loop then calling all the HAL config followed by the LCD configuration function.
 -	Next, we load the function pointers into the LCD driver handler.
 -	Then we glue the STM32_LCD driver(stm32_lcd.h) to the LCD driver (lcd.h).
