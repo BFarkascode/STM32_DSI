@@ -39,7 +39,7 @@ I don’t want to bore anyone with the details, but the STM32U5 DSI examples hav
 
 So, what files will we need to build our own version of the project?
 
--	.ioc
+####	.ioc
 The most apparent element we will be setting up is the “.ioc” file (i.e, CubeMx). Now, the ideal solution would be to just take the existing “.ioc” from the example project and then clone it for our new project. Unfortunately, this will not work either because there are some integration elements within the example project that is not transferred this way, or because the example project is written for an U5A9 and not for the U5G9 (mind, the A9 is the previous version of the G9 that is not available anymore).
 
 Long story short, we will need to set up our own “.ioc” by hand from scratch by:
@@ -61,19 +61,19 @@ o	clock the DSI txclkesc clock at 15.625 MHz by prescaling the lane byte clock
 
 Mind, this is just a clumsy recreation of something that works. Also, the “.ioc” we will generate this way will be transferrable, unlike the original one.
 
--	lcd driver
+####	lcd driver
 We need to carry over the general stm32 LCD driver header file (lcd.h). This is the general lcd driver that will be in the “BSP” section of the project repository (something like Drivers/BSP/Components/Common).
 
--	stm32_lcd
+####	stm32_lcd
 This is the second driver we will need to implement. It will not be stored in components but in “utilities”, usually within the device repository root folder. This is a generic driver for the lcd screen. Mind, the “stm32_lcd” driver uses the fonts for certain functions, so we will need to include the “font.h” header and different font source files somewhere as well, unfortunately.
 
--	main
+####	main
 We can clone the “main.c” and its header from the original project, but we will need to make some small modifications: we will have to include the “lcd.h” header somewhere and remove the “stm32ux9j_discovery.h” header. We can also cut many support functions, just as the red LED control and the text publishing from the screen since we won’t need them and doing so makes the code a lot easier to follow afetrwards.
 
--	image header files
+####	image header files
 We also have two image header files which store the two stock ST image in RGB888 format. It is best to carry those over as well and save us the trouble of generating our own example images.
 
-#### HAL project analysis
+### HAL project analysis
 We now have our own working version of the original project with all the unnecessary bits removed. Let’s go through step-by-step, what is going on in this project, shall we?
 -	We define the LCD driver handler (LCD_UTILS_drv_t). Mind, this handler is a function pointer (!) struct, so we will have to fill it up with functions (see below).
 -	We define the image array as static constants (in FLASH, not RAM).
@@ -104,7 +104,7 @@ Well, as I see, we need to do the following:
 -	Port LTDC to U5 from a previous project and rewrite RectFill function
 -	Set DSIHOST
 -	Configure the screen
--	
+	
 Let’s get to it then!
 
 #### Clocking
